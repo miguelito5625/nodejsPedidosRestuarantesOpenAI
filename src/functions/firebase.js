@@ -18,30 +18,51 @@ const db = getFirestore();
 //     });
 // });
 
-async function writeData() {
-    const docRef = await db.collection('restaurantes/laterraza/pedidos').add({
-        platillos: [
-            {
-                nombre: 'pollo',
-                precio: 20.00
-            },
-            {
-                nombre: 'carne',
-                precio: 25.00
-            }
-        ],
-        direccion: 'quirigua',
-        total: 45.00
-    });
-    console.log('Added document with ID: ', docRef.id);
+async function writeData(order) {
+    try {
+        const docRef = await db.collection('restaurantes/laterraza/pedidos').add(order);
+        console.log('Added document with ID: ', docRef.id);
+    } catch (error) {
+        console.error('Error al guardar el documento:', error);
+    }
 }
 
 
 async function readData() {
     const snapshot = await db.collection('restaurantes/laterraza/pedidos').get();
-    snapshot.forEach((doc) => {
-        console.log(doc.id, '=>', doc.data());
-    });
+
+    try {
+        snapshot.forEach((doc) => {
+            console.log(doc.id, '=>', doc.data());
+        });
+    } catch (error) {
+        console.error('Error al obtener los documentos:', error);
+    }
+
 }
 
-writeData();
+
+async function deleteAllOrders() {
+    const docRef = await db.collection('restaurantes/laterraza/pedidos');
+    try {
+        // Obtener los documentos de la colección "pedidos"
+        const querySnapshot = await docRef.get();
+
+        // Borrar cada documento de la colección
+        querySnapshot.forEach((doc) => {
+            doc.ref.delete();
+        });
+
+        console.log('Se borraron todos los documentos de la colección "restaurantes/laterraza/pedidos"');
+    } catch (error) {
+        console.error('Error al borrar los documentos:', error);
+    }
+}
+
+// deleteAllOrders();
+
+module.exports = {
+    writeData,
+    readData,
+    deleteAllOrders
+}
