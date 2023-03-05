@@ -33,11 +33,28 @@ function countLines(variable) {
       }
   }
 
-  function removeLines(text, linesToRemove) {
-    const lines = text.split("\n");
-    return [lines[0]].concat(lines.slice(linesToRemove + 1)).join("\n");
+  function removeLines(conversation, preTrainingWords, numLinesToDelete) {
+    // Separa el texto en líneas individuales
+    const conversationLines = conversation.split('\n');
+    const preTrainingLines = preTrainingWords.split('\n');
+  
+    // Encuentra el índice de la primera línea que no está en preTrainingWords
+    let firstNonPreTrainingLineIndex = conversationLines.findIndex(line => !preTrainingLines.includes(line));
+    if (firstNonPreTrainingLineIndex === -1) {
+      // Si todas las líneas están en preTrainingWords, establece el índice en el final del array
+      firstNonPreTrainingLineIndex = conversationLines.length;
+    }
+  
+    // Elimina las líneas especificadas a partir del índice encontrado
+    conversationLines.splice(firstNonPreTrainingLineIndex, numLinesToDelete);
+  
+    // Junta las líneas restantes de nuevo en un solo string
+    const remainingText = conversationLines.join('\n');
+  
+    return remainingText;
   }
-
+  
+  
   
 module.exports = {
     countLines,
