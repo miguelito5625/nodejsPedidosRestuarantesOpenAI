@@ -1,6 +1,7 @@
 const { Configuration, OpenAIApi } = require("openai");
 const readline = require('readline');
 const { hasJSONInString, extractJSONFromString } = require("../functions/myFunctions");
+const { writeData } = require("../functions/firebase");
 require('dotenv').config()
 
 const configuration = new Configuration({
@@ -10,27 +11,21 @@ const configuration = new Configuration({
 let conversation = '';
 
 let preTrainingWords = 
-`Respondele a mis clientes tomando en cuenta lo siguiente:
-somos una tienda con multiples productos,
-atendemos 24/7,
-preguntar si lo quiere agregar al carrito y cuantas unidades, llevar el control del carrito,
-dar el total cada vez que agregue algo al carrito
-preguntar si desea algo mas,
-si ya no desea nada mas siempre crear un json con los datos del carrito: 
->> {"productos": [{"nombre": "leche","precio": 20.00, "cantidad":2}...] "total": total} << agrega estos delimitadores >> json <<
-tenemos los siguientes productos:
-1. leche a Q20.00
-2. Cereal a Q15.00
-3. harina a Q4.00 la libra
-la conversacion comienza ahora:
-
-quiero harina
-Excelente elección. ¿Cuántas unidades desea?
-dos
-Hemos agregado 2 unidades de Harina al carrito. ¿Desea algo más?
-si
-leche una unidad
-Hemos agregado 1 unidad de Leche al carrito. ¿Desea algo más?
+`Responde a mis clientes diciendo que eres la inteligencia artificial del restaurante la terraza,
+platillos del dia:
+1. pollo frito a Q20.00
+2. Carne a la plancha a Q25.00
+3. Pollo horneado a Q35.00,
+pregunta que desean y la cantidad,
+pregunta si desean algo mas,
+pregunta el nombre de la persona y la dirección de entrega,
+muestrame un json con los platillos y las cantidades, el total del pedido, nombre de la persona y direccion, ejemplo del json:
+>> {"platillos":[{"nombre":"nombre", "cantidad":cantidad, "precio": precio}...], "total":totalpedido, "nombrecomprador":"nombrecomprador", "direccion":"direccion"} <<,
+si te piden el total muestralo sin formato json,
+la unica forma de pago es al recibir, no preguntes por formas de pago,
+cuando te den la dirección no la corrigas,
+IMPORTANTE: no generes las respuesta del cliente tu mismo,
+la conversación comienza ahora:
 `;
 
 // console.log(preTrainingWords);
@@ -66,12 +61,18 @@ function askQuestion() {
             prompt: conversation,
             max_tokens: 300
         });
-        console.log(completion.data.choices[0].text);
         if (hasJSONInString(completion.data.choices[0].text)) {
             console.log("Si hay un json!!!!!!!!!!!!!!!!!!!!");
-            console.log(extractJSONFromString(completion.data.choices[0].text));
+            const order = extractJSONFromString(completion.data.choices[0].text);
+            writeData(order);
+            console.log(order);
+            console.log("Pedido realizado");
+            pushConversation("Pedido realizado");
+        }else{
+            console.log(completion.data.choices[0].text);
+            pushConversation(completion.data.choices[0].text);
         }
-        pushConversation(completion.data.choices[0].text);
+        
         // console.log("Conversacion:");
         // console.log(conversation);
         // console.log("Tokens: " + conversation.length);

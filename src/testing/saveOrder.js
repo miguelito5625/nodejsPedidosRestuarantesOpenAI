@@ -1,5 +1,5 @@
 const { writeData, readData, deleteAllOrders } = require('../functions/firebase');
-
+deleteAllOrders();
 // deleteAllOrders();
 
 // const order = {
