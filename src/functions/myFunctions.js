@@ -5,60 +5,6 @@ function countLines(variable) {
     return lineas.length;
   }
 
-  // function extractJSONFromString(str) {
-  //   try {
-  //     // Buscamos el inicio del JSON
-  //     const startIndex = str.indexOf('{');
-  //     // Buscamos el final del JSON
-  //     const endIndex = str.lastIndexOf('}');
-  //     // Extraemos el JSON
-  //     const jsonStr = str.substring(startIndex, endIndex + 1);
-  //     // Convertimos el JSON en objeto
-  //     const jsonObj = JSON.parse(jsonStr);
-  //     // Retornamos el objeto
-  //     return jsonObj;
-  //   } catch (e) {
-  //     console.error('Error al extraer el JSON: ', e);
-  //     return null;
-  //   }
-  // }
-
-  // function extractJSONFromString(str) {
-  //   try {
-  //     // Buscamos el inicio del JSON
-  //     const startIndex = str.indexOf('{');
-  //     // Buscamos el final del JSON
-  //     const endIndex = str.lastIndexOf('}');
-  //     // Extraemos el JSON
-  //     const jsonStr = str.substring(startIndex, endIndex + 1).replace(/'/g, '"');
-  //     // Convertimos el JSON en objeto
-  //     const jsonObj = JSON.parse(jsonStr);
-  //     // Retornamos el objeto
-  //     return jsonObj;
-  //   } catch (e) {
-  //     console.error('Error al extraer el JSON: ', e);
-  //     return null;
-  //   }
-  // }
-
-  // function extractJSONFromString(str) {
-  //   try {
-  //     // Buscamos el inicio del JSON
-  //     const startIndex = str.indexOf('>>');
-  //     // Buscamos el final del JSON
-  //     const endIndex = str.lastIndexOf('<<');
-  //     // Extraemos el JSON
-  //     const jsonStr = str.substring(startIndex + 2, endIndex).trim();
-  //     // Convertimos el JSON en objeto
-  //     const jsonObj = JSON.parse(jsonStr);
-  //     // Retornamos el objeto
-  //     return jsonObj;
-  //   } catch (e) {
-  //     console.error('Error al extraer el JSON: ', e);
-  //     return null;
-  //   }
-  // }
-
   function extractJSONFromString(str) {
     try {
       // Buscamos el JSON en el string utilizando una expresión regular
@@ -86,29 +32,16 @@ function countLines(variable) {
         return false;
       }
   }
-  
-  
-  
 
-  // function hasJSONInString(str) {
-  //   try {
-  //     // Buscamos el inicio del JSON
-  //     const startIndex = str.indexOf('{');
-  //     // Buscamos el final del JSON
-  //     const endIndex = str.lastIndexOf('}');
-  //     // Comprobamos si se encontró el JSON
-  //     return startIndex !== -1 && endIndex !== -1;
-  //   } catch (e) {
-  //     // console.error('Error al verificar si hay un JSON en el string: ', e);
-  //     return false;
-  //   }
-  // }
-  
-  
+  function removeLines(text, linesToRemove) {
+    const lines = text.split("\n");
+    return [lines[0]].concat(lines.slice(linesToRemove + 1)).join("\n");
+  }
 
   
 module.exports = {
     countLines,
     hasJSONInString,
-    extractJSONFromString
+    extractJSONFromString,
+    removeLines
 }
